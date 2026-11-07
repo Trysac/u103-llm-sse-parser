@@ -1,55 +1,41 @@
-# llm-sse-parser
+# @trysac/llm-sse-parser
 
-[![npm version](https://img.shields.io/npm/v/@trysac/llm-sse-parser.svg)](https://www.npmjs.com/package/@trysac/llm-sse-parser)
-[![license: MIT](https://img.shields.io/npm/l/@trysac/llm-sse-parser.svg)](LICENSE)
-[![CI](https://github.com/Trysac/u103-llm-sse-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u103-llm-sse-parser/actions/workflows/ci.yml)
+Spec-compliant Server-Sent Events parser for LLM streams with byte-safe chunking, typed Anthropic, OpenAI, and Gemini text deltas, and Last-Event-ID reconnection.
 
-Spec-compliant Server-Sent Events parser for LLM streams with byte-safe chunking, typed Anthropic, OpenAI and Gemini text deltas and Last-Event-ID reconnection
+## The Problem
 
-## Problem
+Most LLM SDKs implement custom SSE parsing that fails on edge cases like splitting UTF-8 characters across network chunks, mishandling CR line endings, or lacking memory limits. Applications calling these providers directly need a correct, specification-compliant parser that handles multi-provider text normalization and resilient reconnection.
 
-Describe in two or three sentences the concrete problem this utility solves, who hits it, and why existing
-packages do not solve it well. Keep it factual; link to an issue or decision record when there is one.
+## Installation
 
-## Install
-
-```sh
+```bash
 npm install @trysac/llm-sse-parser
 ```
 
-Requires Node.js 20 or newer. The package ships ES modules with TypeScript declarations.
-
 ## Usage
 
-```ts
-import { greet } from "@trysac/llm-sse-parser";
+```typescript
+import { parseSse, toTextDeltas } from "@trysac/llm-sse-parser";
 
-// Build a greeting; surrounding whitespace is ignored.
-const message = greet("  Ada ");
-console.log(message); // "Hello, Ada!"
-
-try {
-  greet("   ");
-} catch (error) {
-  console.error((error as Error).message); // "name must not be empty"
+const stream = parseSse(response.body!);
+for await (const part of toTextDeltas("openai", stream)) {
+  if (part.type === "text") process.stdout.write(part.text);
+  if (part.type === "done") console.log(`Finished: ${part.reason}`);
 }
 ```
 
-## API
+## API Overview
 
-| Export | Signature | Description |
-|---|---|---|
-| `greet` | `(name: string) => string` | Placeholder API; replace it with the real one. |
+- `SseParser`: Incremental parser for raw bytes or strings. Supports `maxLineBytes` and `maxEventBytes` configuration.
+- `parseSse`: Async generator that converts an `AsyncIterable` of chunks into an `AsyncIterable<SseEvent>`.
+- `toTextDeltas`: Normalizes SSE event streams for `openai`, `anthropic`, or `gemini` into `text`, `done`, or `error` parts.
+- `reconnecting`: Runner for persistent connections, handling `Last-Event-ID` and retries.
+- `SseError`: Error class providing codes `LINE_TOO_LONG`, `EVENT_TOO_LARGE`, `INVALID_JSON`, `RETRIES_EXHAUSTED`, and `INVALID_OPTIONS`.
 
-## Development
+## Why not EventSource or standard parsers?
 
-```sh
-npm install
-npm run check   # lint, format, types, tests with coverage, docs, secrets
-```
+Standard browser `EventSource` cannot access the underlying response body for streaming LLM outputs, nor does it support non-standard retry behaviors or provider-specific JSON delta extraction. This library provides byte-level control and memory safety.
 
-See [AGENTS.md](AGENTS.md) for the full command list and [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+## Security
 
-## License
-
-[MIT](LICENSE) © 2026 Miguel Gomez
+See [docs/SECURITY.md](docs/SECURITY.md) for the threat model and limits.
