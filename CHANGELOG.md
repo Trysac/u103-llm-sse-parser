@@ -9,4 +9,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Add spec-compliant Server-Sent Events parser, multi-provider text delta normalisation, and Last-Event-ID reconnection.
 - Initial project structure from the factory utility template.

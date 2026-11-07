@@ -2,27 +2,18 @@
 
 ## Tools
 
-- [Vitest](https://vitest.dev/) runs the suites in `test/`.
-- Coverage is collected with V8 (`@vitest/coverage-v8`) over `src/`.
-
-## Commands
-
-```sh
-npm test            # vitest run --coverage
-npx vitest          # watch mode while developing
-npm run check       # every gate, including tests
-```
+- [Vitest](https://vitest.dev/) runs the suites in `test/index.test.ts`.
 
 ## Rules
 
-- Coverage must stay at or above 80 % for lines, branches, functions and statements (`vitest.config.ts`).
-  Lowering the thresholds is not allowed.
-- Test through the public entry point (`src/index.ts`) and assert observable behavior: return values,
-  thrown errors and their messages.
-- Each bug fix adds a test that fails without the fix.
-- Tests are deterministic: no network, no real clock or randomness without injection, no shared state between
-  tests. Temporary files go to the OS temp directory and are removed by the test.
+- Coverage targets must meet or exceed 80%.
+- Tests must be deterministic (no real network or timers).
+- Assertions focus on observable behavior (return values, thrown errors).
 
-## Reports
+## Coverage
 
-Coverage reports are written to `coverage/` (text summary and `lcov`). The folder is ignored by git.
+- **Parser compliance**: Validates parsing of LF, CR, CRLF, BOM stripping, comment lines, field parsing, and event dispatching.
+- **Chunking**: Verifies single-byte splitting and multi-byte UTF-8 character splitting across chunks.
+- **Provider Normalization**: Confirms logic for OpenAI, Anthropic, and Gemini delta extraction.
+- **Resilience**: Tests reconnection logic, `Last-Event-ID` state retention, and retry thresholds.
+- **Errors**: Validates `LINE_TOO_LONG`, `EVENT_TOO_LARGE`, `INVALID_JSON`, and `RETRIES_EXHAUSTED` conditions.

@@ -1,28 +1,18 @@
 # Security practices
 
-How this repository keeps the package and its users safe. The disclosure policy is in
-[../SECURITY.md](../SECURITY.md).
+## Threat Model
 
-## Secrets
+- **Buffer Exhaustion**: Defended via configurable `maxLineBytes` and `maxEventBytes`. The parser throws `SseError` if these limits are exceeded.
+- **Malformed Input**: JSON data in SSE events is parsed safely. Invalid JSON triggers `INVALID_JSON` errors, with payloads truncated to 200 characters to prevent log flooding.
+- **Reconnection Cycles**: Defended via `maxRetries` limits and injection of an external sleep function.
 
-- No secrets, tokens or credentials in the repository, commit history, logs or prompts.
-- `gitleaks` runs as the last step of `npm run check` and as a dedicated CI job. Its configuration is
-  `.gitleaks.toml`.
-- Publishing credentials live only in the CI secret store or the maintainer's local npm configuration.
+## Limits
 
-## Dependencies
+- `maxLineBytes`: Default 1 MiB. Enforces strict byte-counting to prevent memory growth.
+- `maxEventBytes`: Default 4 MiB. Prevents unbounded data accumulation.
 
-- Runtime dependencies are avoided; development dependencies are limited to the toolchain listed in
-  [STACK.md](STACK.md).
-- Dependabot opens weekly updates for npm packages and GitHub Actions.
-- Commit the generated `package-lock.json` so installs are reproducible.
+## Practices
 
-## Code
-
-- No `eval`, dynamic `Function` construction or shelling out from library code.
-- Inputs from callers are validated and rejected with explicit errors.
-
-## Publishing
-
-- Packages are published from a clean checkout after `npm run check` passes.
-- Only `dist/` is included in the published tarball.
+- No `eval` or dynamic code execution.
+- No runtime dependencies.
+- Regular dependency audits via Dependabot.

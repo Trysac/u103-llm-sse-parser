@@ -4,14 +4,8 @@
 
 ## Docs
 
-- [README](README.md): problem, installation and usage example
-- [AGENTS.md](AGENTS.md): commands, folder map, conventions and limits for contributors and agents
-- [Architecture](docs/ARCHITECTURE.md): modules and boundaries
-- [Testing](docs/TESTING.md): how tests and coverage work
-- [Decisions](docs/decisions/0001-record-architecture-decisions.md): architecture decision records
-
-## Optional
-
-- [Stack](docs/STACK.md): tools used and discarded
-- [Project record](docs/PROJECT.md): objective, scope, timeline and effort metrics
-- [Changelog](CHANGELOG.md)
+- [README](README.md): Problem, installation, and usage example.
+- [Architecture](docs/ARCHITECTURE.md): Modules and boundaries.
+- [Testing](docs/TESTING.md): How tests and coverage work.
+- [Security](docs/SECURITY.md): Threat model and memory limits.
+- [Project record](docs/PROJECT.md): Objective, scope, and metrics.
