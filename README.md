@@ -8,9 +8,15 @@ Most LLM SDKs implement custom SSE parsing that fails on edge cases like splitti
 
 ## Installation
 
-```bash
-npm install @trysac/llm-sse-parser
+Not published to npm yet. Build it from a clone, then install it from the local path:
+
+```sh
+git clone https://github.com/Trysac/u103-llm-sse-parser.git
+cd u103-llm-sse-parser && npm ci && npm run build
+cd ../your-project && npm install ../u103-llm-sse-parser
 ```
+
+Imports keep the package name: `import { ... } from "@trysac/llm-sse-parser"`.
 
 ## Usage
 
